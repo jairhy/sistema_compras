@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style_cad.css">
+    <script src="../js/relatorio_tabela.js" defer></script>
+    <title>Relatórios Analíticos em Tabela</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html">Home</a>&emsp;&emsp;
+            <span class="titulo_menu">Relatórios</span>&emsp;
+            <a href="./relatorio_tabela.html">Analítico (Tabelas)</a>&emsp;
+            <a href="./mov_categoria_listar.html">Volume (Gráfico)</a>&emsp;
+            <a href="./mov_historico_saida.html">Críticos (Gráfico)</a>
+            <br><br><hr><br>
+        </nav>
+    </header>
+    <main>
+        <h1>Relatórios Analíticos (Views SQL)</h1>
+        <div id="resposta" class="resposta">Carregando relatórios...</div>
+        <br>
+
+        <h2>1. Relatório de Produtos Críticos (estoque < 10)</h2>
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Quantidade Atual</th>
+                </tr>
+            </thead>
+            <tbody id="tbody_criticos"></tbody>
+        </table>
+
+        <br><br>
+
+        <h2>2. Relatório de Volume Comprado por Produto</h2>
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade Total Movimentada</th>
+                    <th>Valor Financeiro Movimentado</th>
+                </tr>
+            </thead>
+            <tbody id="tbody_volume"></tbody>
+        </table>
+    </main>
+</body>
+</html>

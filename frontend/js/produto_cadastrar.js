@@ -3,42 +3,64 @@ let btn_cadastrar_manual = document.getElementById('btn_cadastrar_manual')
 let btn_carga_lote = document.getElementById('btn_carga_lote')
 
 // =========================================================================
-// COMPORTAMENTO 1: CADASTRO MANUAL (INDICAÇÃO VISUAL / APENAS MODELO)
+// COMPORTAMENTO 1: CADASTRO MANUAL DE PRODUTO (POST /produtos)
 // =========================================================================
 btn_cadastrar_manual.addEventListener('click', (e) => {
     e.preventDefault()
-    // Apenas indica visualmente no painel sem disparar requisições para o back-end
-    resposta.innerHTML = '<p style="color: #ffaa00;">Aviso: O cadastro manual de produtos está desativado nesta etapa. Utilize a Carga em Lote.</p>'
-})
 
-// =========================================================================
-// COMPORTAMENTO 2: CADASTRO EM LOTE (BULKCREATE VIA DUMMYJSON)
-// =========================================================================
-btn_carga_lote.addEventListener('click', (e) => {
-    e.preventDefault()
-    resposta.innerHTML = '<p style="color: yellow;">Buscando catálogos de produtos na API DummyJSON...</p>'
+    const nome = document.getElementById('nome').value
+    const categoria = document.getElementById('categoria').value
+    const quantidade = document.getElementById('quantidade').value
+    const precoUnit = document.getElementById('precoUnit').value
 
-    // 1. Consome os dados da API pública externa de produtos
-    fetch('https://dummyjson.com/products')
-    .then(res => res.json())
-    .then(dadosExternos => {
-        resposta.innerHTML = '<p style="color: cyan;">Dados recebidos com sucesso! Transmitindo lote para o back-end...</p>'
-        
-        // 2. Transmite a propriedade nativa array (.products) diretamente para o backend local
-        return fetch('http://localhost:3000/produtos/carga-lote', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify(dadosExternos.products)
-        })
+    if (!nome || !categoria || !quantidade || !precoUnit) {
+        resposta.innerHTML = '<p style="color: #ffaa00;">Preencha todos os campos para o cadastro.</p>'
+        return
+    }
+
+    const dados = {
+        nome: nome,
+        descricao: '',
+        categoria: categoria,
+        preco: parseFloat(precoUnit),
+        desconto: 0,
+        qtdeEstoque: parseInt(quantidade),
+        marca: '',
+        imagem: ''
+    }
+
+    fetch('http://localhost:3000/produtos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
     })
     .then(res => res.json())
     .then(dados => {
-        resposta.innerHTML = `<p style="color: lightgreen;">${dados.message || 'Carga estrutural de produtos realizada com sucesso!'}</p>`
+        resposta.innerHTML = `<p style="color: lightgreen;">Produto cadastrado com sucesso! (ID ${dados.codProduto})</p>`
+    })
+    .catch(err => {
+        console.error('Erro no cadastro manual:', err)
+        resposta.innerHTML = '<p style="color: red;">Erro ao cadastrar produto manualmente.</p>'
+    })
+})
+
+// =========================================================================
+// COMPORTAMENTO 2: CADASTRO EM LOTE (O BACKEND CONSULTA A API DUMMYJSON)
+// =========================================================================
+btn_carga_lote.addEventListener('click', (e) => {
+    e.preventDefault()
+    resposta.innerHTML = '<p style="color: yellow;">Solicitando ao backend a importação dos produtos da API DummyJSON...</p>'
+
+    fetch('http://localhost:3000/produtos/carga-lote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(dados => {
+        resposta.innerHTML = `<p style="color: lightgreen;">${dados.message || 'Carga em lote de produtos realizada com sucesso!'}</p>`
     })
     .catch(err => {
         console.error('Erro na carga em lote de produtos:', err)
-        resposta.innerHTML = '<p style="color: red;">Falha ao processar os dados da carga de produtos em lote.</p>'
+        resposta.innerHTML = '<p style="color: red;">Falha ao processar a carga em lote de produtos.</p>'
     })
 })

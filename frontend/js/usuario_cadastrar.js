@@ -3,35 +3,55 @@ let btn_cadastrar_manual = document.getElementById('btn_cadastrar_manual')
 let btn_carga_lote = document.getElementById('btn_carga_lote')
 
 // =========================================================================
-// COMPORTAMENTO 1: CADASTRO MANUAL (INDICAÇÃO VISUAL / APENAS MODELO)
+// COMPORTAMENTO 1: CADASTRO MANUAL DE USUÁRIO (POST /usuarios)
 // =========================================================================
 btn_cadastrar_manual.addEventListener('click', (e) => {
     e.preventDefault()
-    // Apenas indica visualmente no painel sem disparar requisições para o back-end
-    resposta.innerHTML = '<p style="color: #ffaa00;">Aviso: O cadastro manual está desativado nesta etapa. Utilize a Carga em Lote.</p>'
+
+    const nome = document.getElementById('nome').value
+    const email = document.getElementById('email').value
+
+    if (!nome || !email) {
+        resposta.innerHTML = '<p style="color: #ffaa00;">Preencha nome e e-mail para o cadastro.</p>'
+        return
+    }
+
+    const dados = {
+        nome: nome,
+        sobrenome: '',
+        idade: 0,
+        email: email,
+        telefone: '',
+        endereco: '',
+        cidade: '',
+        estado: ''
+    }
+
+    fetch('http://localhost:3000/usuarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+    })
+    .then(res => res.json())
+    .then(dados => {
+        resposta.innerHTML = `<p style="color: lightgreen;">Usuário cadastrado com sucesso! (ID ${dados.codUsuario})</p>`
+    })
+    .catch(err => {
+        console.error('Erro no cadastro manual:', err)
+        resposta.innerHTML = '<p style="color: red;">Erro ao cadastrar usuário manualmente.</p>'
+    })
 })
 
 // =========================================================================
-// COMPORTAMENTO 2: CADASTRO EM LOTE (BULKCREATE VIA DUMMYJSON)
+// COMPORTAMENTO 2: CADASTRO EM LOTE (O BACKEND CONSULTA A API DUMMYJSON)
 // =========================================================================
 btn_carga_lote.addEventListener('click', (e) => {
     e.preventDefault()
-    resposta.innerHTML = '<p style="color: yellow;">Buscando registros na API DummyJSON (https://dummyjson.com/users)...</p>'
+    resposta.innerHTML = '<p style="color: yellow;">Solicitando ao backend a importação dos usuários da API DummyJSON...</p>'
 
-    // 1. Consome os dados da API pública externa de usuários
-    fetch('https://dummyjson.com/users')
-    .then(res => res.json())
-    .then(dadosExternos => {
-        resposta.innerHTML = '<p style="color: cyan;">Dados recebidos com sucesso! Transmitindo lote para o back-end...</p>'
-        
-        // 2. Repassa o array bruto (.users) diretamente ao endpoint de carga em lote
-        return fetch('http://localhost:3000/usuarios/carga-lote', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify(dadosExternos.users)
-        })
+    fetch('http://localhost:3000/usuarios/carga-lote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
     })
     .then(res => res.json())
     .then(dados => {
@@ -39,6 +59,6 @@ btn_carga_lote.addEventListener('click', (e) => {
     })
     .catch(err => {
         console.error('Erro na carga em lote:', err)
-        resposta.innerHTML = '<p style="color: red;">Falha ao processar os dados da carga em lote no servidor local.</p>'
+        resposta.innerHTML = '<p style="color: red;">Falha ao processar a carga em lote de usuários.</p>'
     })
 })

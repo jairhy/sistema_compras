@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style_cad.css">
+    <script src="../js/movimento_listar.js" defer></script>
+    <title>Histórico de Compras</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html">Home</a>&emsp;&emsp;
+            <span class="titulo_menu">Operações</span>&emsp;
+            <a href="./movimento_cadastrar.html">Registrar Compra</a>&emsp;
+            <a href="./movimento_listar.html">Histórico de Compras</a>
+            <br><br><hr><br>
+        </nav>
+    </header>
+    <main>
+        <h2>Histórico de Movimentações de Estoque</h2>
+        <br>
+        <div id="resposta" class="resposta">Carregando...</div>
+        <br>
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuário</th>
+                    <th>Produto</th>
+                    <th>Tipo</th>
+                    <th>Qtd</th>
+                    <th>Preço Unit.</th>
+                    <th>Preço Final</th>
+                    <th>Pagamento</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody id="corpo_tabela"></tbody>
+        </table>
+    </main>
+</body>
+</html>

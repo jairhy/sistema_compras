@@ -2,6 +2,23 @@ const Usuario = require('../models/Usuario')
 const Produto = require('../models/Produto')
 const Compra = require('../models/Compra')
 
+// Listar todas as compras (histórico de movimentação completo)
+const listar = async (req, res) => {
+    try {
+        const compras = await Compra.findAll({
+            order: [['dataCompra', 'DESC'], ['codCompra', 'DESC']],
+            include: [
+                { model: Usuario, as: 'usuarioCompra', attributes: ['nome', 'sobrenome', 'email'] },
+                { model: Produto, as: 'produtoCompra', attributes: ['nome', 'categoria'] }
+            ]
+        })
+        res.status(200).json(compras)
+    } catch (err) {
+        console.error('Erro ao listar compras:', err)
+        res.status(500).json({ message: 'Erro ao listar compras' })
+    }
+}
+
 const cadastrar = async (req, res) => {
     const valores = req.body
 
@@ -74,4 +91,4 @@ const cadastrar = async (req, res) => {
 }
 
 
-module.exports = { cadastrar }
+module.exports = { listar, cadastrar }

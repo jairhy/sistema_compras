@@ -45,7 +45,7 @@ const Compra = db.define('compra', {
         allowNull: false
     },
     formaPagamento: {
-        type: DataTypes.ENUM('DEBITO', 'CREDITO', 'DINHEIRO'),
+        type: DataTypes.ENUM('DEBITO', 'CREDITO', 'DINHEIRO', 'PIX'),
         allowNull: false
     },
     statusCompra: {

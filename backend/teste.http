@@ -1,170 +1,218 @@
-### - testes da API - o REST Client
+### Testes da API - REST Client
+# Use o VS Code REST Client e clique em 'Send Request' em cada bloco.
+# NÃO abra as URLs POST no navegador.
 
-### - Teste se o servidor está funcionando
+### Teste 1: Servidor funcionando
 GET http://localhost:3000/
 Content-Type: application/json
 
-#####################################################################
-### PASSO 1: CARGA INICIAL DE PRODUTOS POR CATEGORIAS DISTINTAS
-# Criando uma base com 6 categorias diferentes para popular o Top 5
+### Teste 2: Reset do banco de testes (recria as tabelas vazias)
+POST http://localhost:3000/test/reset
+Content-Type: application/json
 
+### Teste 3: Carga em lote de usuários via API DummyJSON (FETCH no backend)
+POST http://localhost:3000/usuarios/carga-lote
+Content-Type: application/json
+
+### Teste 4: Carga em lote de produtos via API DummyJSON (FETCH no backend)
 POST http://localhost:3000/produtos/carga-lote
 Content-Type: application/json
 
-[
-    {
-        "title": "Mascara Lash Princess",
-        "category": "Beleza",
-        "price": 50.00,
-        "stock": 5
-    },
-    {
-        "title": "Tênis de Corrida Pegasus",
-        "category": "Calçados",
-        "price": 700.00,
-        "stock": 25
-    },
-    {
-        "title": "Smartphone Quantum v4",
-        "category": "Eletrônicos",
-        "price": 2500.00,
-        "stock": 12
-    },
-    {
-        "title": "Cadeira Ergonômica Pro",
-        "category": "Escritório",
-        "price": 1200.00,
-        "stock": 8
-    },
-    {
-        "title": "Cafeteira Express",
-        "category": "Eletrodomésticos",
-        "price": 450.00,
-        "stock": 15
-    },
-    {
-        "title": "Livro de Estrutura de Dados",
-        "category": "Livros",
-        "price": 120.00,
-        "stock": 40
-    }
-]
+### ---------- CRUD USUÁRIOS ----------
 
-#####################################################################
-### PASSO 2: MOVIMENTAÇÕES DE ESTOQUE PARA RECHEAR O GRÁFICO (TOP 5)
+### Teste 5a: Criar usuário manualmente (POST)
+POST http://localhost:3000/usuarios
+Content-Type: application/json
 
-### - Movimentação 1: Venda em Eletrônicos (Gera alto volume financeiro)
+{
+  "nome": "Jair",
+  "sobrenome": "Silva",
+  "idade": 35,
+  "email": "jair.silva@example.com",
+  "telefone": "11999999999",
+  "endereco": "Rua Exemplo, 100",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+
+### Teste 5b: Listar todos os usuários (GET)
+GET http://localhost:3000/usuarios
+Content-Type: application/json
+
+### Teste 5c: Consultar usuário por id (GET)
+GET http://localhost:3000/usuarios/1
+Content-Type: application/json
+
+### Teste 5d: Atualizar usuário por id (PUT)
+PUT http://localhost:3000/usuarios/1
+Content-Type: application/json
+
+{
+  "sobrenome": "Silva de Souza",
+  "email": "jair.souza@example.com"
+}
+
+### ---------- CRUD PRODUTOS ----------
+
+### Teste 6a: Criar produto manualmente (POST)
+POST http://localhost:3000/produtos
+Content-Type: application/json
+
+{
+  "nome": "Mascara Lash Princess",
+  "descricao": "Máscara de cílios",
+  "categoria": "Beleza",
+  "preco": 50.00,
+  "desconto": 0,
+  "qtdeEstoque": 5,
+  "marca": "Essence",
+  "imagem": ""
+}
+
+### Teste 6b: Listar todos os produtos (GET)
+GET http://localhost:3000/produtos
+Content-Type: application/json
+
+### Teste 6c: Consultar produto por id (GET)
+GET http://localhost:3000/produtos/1
+Content-Type: application/json
+
+### Teste 6d: Atualizar produto por id (PUT)
+PUT http://localhost:3000/produtos/1
+Content-Type: application/json
+
+{
+  "preco": 45.00,
+  "qtdeEstoque": 8
+}
+
+### ---------- MOVIMENTAÇÕES DE ESTOQUE ----------
+
+### Movimentação 1: Venda em Eletrônicos
 POST http://localhost:3000/compra
 Content-Type: application/json
 
 {
-    "idUsuario": 1,
-    "idProduto": 3,
-    "tipoMovimento": "SAIDA",
-    "quantidadeMovimentada": 3,
-    "descontoAplicado": 0.00,
-    "formaPagamento": "CREDITO",
-    "statusCompra": "PAGA",
-    "dataCompra": "2026-07-06"
+  "idUsuario": 1,
+  "idProduto": 3,
+  "tipoMovimento": "SAIDA",
+  "quantidadeMovimentada": 3,
+  "descontoAplicado": 0.00,
+  "formaPagamento": "CREDITO",
+  "statusCompra": "PAGA",
+  "dataCompra": "2026-07-06"
 }
 
-### - Movimentação 2: Venda em Calçados
+### Movimentação 2: Venda em Calçados
 POST http://localhost:3000/compra
 Content-Type: application/json
 
 {
-    "idUsuario": 1,
-    "idProduto": 2,
-    "tipoMovimento": "SAIDA",
-    "quantidadeMovimentada": 5,
-    "descontoAplicado": 0.00,
-    "formaPagamento": "DEBITO",
-    "statusCompra": "PAGA",
-    "dataCompra": "2026-07-06"
+  "idUsuario": 1,
+  "idProduto": 2,
+  "tipoMovimento": "SAIDA",
+  "quantidadeMovimentada": 5,
+  "descontoAplicado": 0.00,
+  "formaPagamento": "DEBITO",
+  "statusCompra": "PAGA",
+  "dataCompra": "2026-07-06"
 }
 
-### - Movimentação 3: Venda em Escritório
+### Movimentação 3: Venda em Escritório
 POST http://localhost:3000/compra
 Content-Type: application/json
 
 {
-    "idUsuario": 1,
-    "idProduto": 4,
-    "tipoMovimento": "SAIDA",
-    "quantidadeMovimentada": 2,
-    "descontoAplicado": 0.00,
-    "formaPagamento": "PIX",
-    "statusCompra": "PAGA",
-    "dataCompra": "2026-07-06"
+  "idUsuario": 1,
+  "idProduto": 4,
+  "tipoMovimento": "SAIDA",
+  "quantidadeMovimentada": 2,
+  "descontoAplicado": 0.00,
+  "formaPagamento": "PIX",
+  "statusCompra": "PAGA",
+  "dataCompra": "2026-07-06"
 }
 
-### - Movimentação 4: Venda em Eletrodomésticos
+### Movimentação 4: Venda em Eletrodomésticos
 POST http://localhost:3000/compra
 Content-Type: application/json
 
 {
-    "idUsuario": 1,
-    "idProduto": 5,
-    "tipoMovimento": "SAIDA",
-    "quantidadeMovimentada": 4,
-    "descontoAplicado": 0.00,
-    "formaPagamento": "DINHEIRO",
-    "statusCompra": "PAGA",
-    "dataCompra": "2026-07-06"
+  "idUsuario": 1,
+  "idProduto": 5,
+  "tipoMovimento": "SAIDA",
+  "quantidadeMovimentada": 4,
+  "descontoAplicado": 0.00,
+  "formaPagamento": "DINHEIRO",
+  "statusCompra": "PAGA",
+  "dataCompra": "2026-07-06"
 }
 
-### - Movimentação 5: Venda em Livros
+### Movimentação 5: Venda em Livros
 POST http://localhost:3000/compra
 Content-Type: application/json
 
 {
-    "idUsuario": 1,
-    "idProduto": 6,
-    "tipoMovimento": "SAIDA",
-    "quantidadeMovimentada": 10,
-    "descontoAplicado": 0.00,
-    "formaPagamento": "CREDITO",
-    "statusCompra": "PAGA",
-    "dataCompra": "2026-07-06"
+  "idUsuario": 1,
+  "idProduto": 6,
+  "tipoMovimento": "SAIDA",
+  "quantidadeMovimentada": 10,
+  "descontoAplicado": 0.00,
+  "formaPagamento": "CREDITO",
+  "statusCompra": "PAGA",
+  "dataCompra": "2026-07-06"
 }
 
-### - Movimentação 6: Venda Crítica em Beleza (Gera alerta no gráfico de estoques críticos)
+### Movimentação 6: Venda Crítica em Beleza
 POST http://localhost:3000/compra
 Content-Type: application/json
 
 {
-    "idUsuario": 1,
-    "idProduto": 1,
-    "tipoMovimento": "SAIDA",
-    "quantidadeMovimentada": 4,
-    "descontoAplicado": 0.00,
-    "formaPagamento": "DEBITO",
-    "statusCompra": "PAGA",
-    "dataCompra": "2026-07-06"
+  "idUsuario": 1,
+  "idProduto": 1,
+  "tipoMovimento": "SAIDA",
+  "quantidadeMovimentada": 4,
+  "descontoAplicado": 0.00,
+  "formaPagamento": "DEBITO",
+  "statusCompra": "PAGA",
+  "dataCompra": "2026-07-06"
 }
 
-### - Movimentação 7: Teste de Erro de Saldo Insuficiente (Deve retornar 400)
+### Movimentação 7: Teste de erro de saldo insuficiente
 POST http://localhost:3000/compra
 Content-Type: application/json
 
 {
-    "idUsuario": 1,
-    "idProduto": 4,
-    "tipoMovimento": "SAIDA",
-    "quantidadeMovimentada": 50,
-    "descontoAplicado": 0.00,
-    "formaPagamento": "CREDITO",
-    "statusCompra": "PENDENTE",
-    "dataCompra": "2026-07-06"
+  "idUsuario": 1,
+  "idProduto": 4,
+  "tipoMovimento": "SAIDA",
+  "quantidadeMovimentada": 50,
+  "descontoAplicado": 0.00,
+  "formaPagamento": "CREDITO",
+  "statusCompra": "PENDENTE",
+  "dataCompra": "2026-07-06"
 }
 
-#####################################################################
-### PASSO 3: VERIFICAÇÃO FINAL DOS RELATÓRIOS
+### Teste 7: Histórico completo de movimentações (GET /compra)
+GET http://localhost:3000/compra
+Content-Type: application/json
 
-### - Consultar Relatório de Categorias (Deve vir ordenado com as 5 principais movimentadas)
+### ---------- RELATÓRIOS (VIEWS) ----------
+
+### Teste 8: Relatório de produtos críticos
+GET http://localhost:3000/relatorio/produtos-criticos
+Content-Type: application/json
+
+### Teste 9: Relatório de volume financeiro por produto
 GET http://localhost:3000/relatorio/volume-compras
 Content-Type: application/json
 
-### - Consultar Relatório de Críticos (Deve apontar o produto 1 com saldo restante 1)
-GET http://localhost:3000/relatorio/produtos-criticos
+### ---------- CRUD DELETE ----------
+
+### Teste 10a: Apagar usuário por id (DELETE)
+DELETE http://localhost:3000/usuarios/1
+Content-Type: application/json
+
+### Teste 10b: Apagar produto por id (DELETE)
+DELETE http://localhost:3000/produtos/1
 Content-Type: application/json
